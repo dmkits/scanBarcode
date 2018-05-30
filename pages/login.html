@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--<head>-->
+    <!--<meta charset="UTF-8">-->
+    <!--&lt;!&ndash;<link rel="icon" type="image/gif" href="/icons/moda32x32.ico"/>&ndash;&gt;-->
+    <!--<script src="/jslib/numeral/languages/ru.js"></script>-->
+    <!--<script src="/jslib/moment/moment-with-locales.js"></script>-->
+    <!--<link rel="stylesheet" href="/jslib/dijit/themes/claro/claro.css" media="screen">-->
+    <!--<script type="text/javascript" src="/jslib/dojo/dojo.js" data-dojo-config="async:true,parseOnLoad:false"></script>-->
+    <!--<title>MODA.UA</title>-->
+<!--</head>-->
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="/icons/heart16.ico"/>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+    <!--<meta name="apple-mobile-web-app-capable" content="yes"/>-->
+    <link href="/jslib/dojox/mobile/themes/iphone/iphone.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/jslib/dojox/widget/Calendar/Calendar.css">
+    <link rel="stylesheet" href="/jslib/dojox/calendar/themes/claro/Calendar.css">
+    <link href="/jslib/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" media="screen">
+    <!--<script type="text/javascript" src="/jslib/dojox/mobile/deviceTheme.js"></script>-->
+
+    <script src="/jslib/moment/moment-with-locales.js"></script>
+    <script src="/jslib/numeral/numeral.js"></script>
+    <script src="/jslib/numeral/languages/ru-UA.js"></script>
+    <script type="text/javascript" src="/jslib/dojo/dojo.js"
+            data-dojo-config="async: true, parseOnLoad: false"></script>
+    <title>MODA.UA</title>
+</head>
+
+<body id="mobileLoginBody" class="claro">
+</body>
+<script type="text/javascript">
+    require(["request", "dojox/mobile/View","dojox/mobile/RoundRectList","dojox/mobile/ListItem","dojox/mobile/Heading",
+                "dojo/store/Memory","dojox/mobile/ComboBox","dojox/mobile/TextBox","dojox/mobile/RoundRect","dojox/mobile/Button",
+            "dojox/mobile/SimpleDialog", 'dojox/mobile/ScrollablePane','dojox/mobile/Pane',"dojox/mobile/Opener"],
+            function (Request, View, roundRectList, ListItem,Heading,Memory, ComboBox, TextBox, RoundRect, Button,
+                      SimpleDialog,ScrollablePane,Pane,Opener) {
+
+                var loginView = new View({id: "loginView"});
+                document.getElementById('mobileLoginBody').appendChild(loginView.domNode);
+                var loginHeading=new Heading({label: "Login"});
+                loginView.addChild(loginHeading);
+                var users=[
+                    {"id":"1", "name":"anna"},
+                    {"id":"2", "name":"borya"},
+                    {"id":"3", "name":"vasya"},
+                    {"id":"4", "name":"gena"},
+                    {"id":"5", "name":"diana"},
+                    {"id":"1", "name":"anna"},
+                    {"id":"2", "name":"borya"},
+                    {"id":"3", "name":"vasya"},
+                    {"id":"4", "name":"gena"},
+                    {"id":"5", "name":"diana"},
+                    {"id":"1", "name":"anna"},
+                    {"id":"2", "name":"borya"},
+                    {"id":"3", "name":"vasya"},
+                    {"id":"4", "name":"gena"},
+                    {"id":"5", "name":"diana"}
+                ];
+                var usersMemory=new Memory({
+                    idProperty: "name",
+                    data:users
+                });
+                var RoundRect = new RoundRect({shadow:true});
+                loginView.addChild(RoundRect);
+                var comboBox= new ComboBox({
+                    value:"Не выбрано",  //U+23F7  &#9661;
+                    store:usersMemory,
+                    'id':'comboboxId',
+                    style:"padding:5px; margin:5px; margin-right:0px;"});
+
+
+              var times=0;
+                comboBox.onFocus=function(){
+                    console.log('!!!!! comboBox.onInput');
+                    if(times>0)return;
+                    waitForElementToDisplay('#comboboxId_popup',20, function(el){
+                        el.style.fontSize="30px";
+                    });
+                    times++;
+                };
+
+               // var span=document.createElement('span');
+
+
+
+                var comboboxLabel=document.createElement('label');
+                comboboxLabel.htmlFor="comboboxId";
+                comboboxLabel.innerText="Name: ";
+                comboboxLabel.style.paddingRight='10px;';
+                RoundRect.domNode.appendChild(comboboxLabel);
+
+                RoundRect.addChild(comboBox);
+
+                var dialog=new SimpleDialog({
+                    style:"text-align:left; font-size:40px; height:300px",
+                    closeButton:true
+                });
+                var scrollablePane= new Pane({});
+                scrollablePane.innerHTML='<div>scrollablePane</div>';
+                scrollablePane.startup();
+                dialog.domNode.appendChild(scrollablePane.domNode);
+
+               // var dialogContent=generateDialogInnerHtml(users);
+              //  dialog.domNode.innerHTML=dialogContent;
+                dialog.startup();
+                loginView.addChild(dialog);
+
+                var comboBtn= new Button({
+                    baseClass:'mblComboBox',
+                    label:"Выбрать", //U+23F7
+                    style:"padding:7px;"
+                });
+
+
+                comboBtn.onClick=function(){
+                    dialog.show();
+                };
+                RoundRect.addChild(comboBtn);
+
+                var passwordTextBox= new TextBox({
+                    type:"password",
+                    id:"passwordId",
+                    style:"padding:5px; margin:5px;"
+                });
+
+//                comboBox.domNode.style.fontSize='40px';
+//                //onFocus()
+
+
+
+                var passwordLabel=document.createElement('label');
+                passwordLabel.htmlFor="passwordId";
+                passwordLabel.innerText="Password: ";
+
+                var br=document.createElement('br');
+                RoundRect.domNode.appendChild(br);
+
+                RoundRect.domNode.appendChild(passwordLabel);
+                RoundRect.addChild(passwordTextBox);
+
+
+
+                var loginBtn= new Button({
+                    label:"Login"
+                });
+                loginBtn.startup();
+                var br2=document.createElement('br');
+                var div=document.createElement('div');
+                div.style.textAlign="center";
+                div.style.margin="5px";
+
+                RoundRect.domNode.appendChild(br2);
+                RoundRect.domNode.appendChild(div);
+                div.appendChild(loginBtn.domNode);
+//                RoundRect.addChild(loginBtn);
+
+
+                function waitForElementToDisplay(selector, time, callback) {
+                    console.log('waitForElementToDisplay');
+                    if(document.querySelector(selector)!=null) {
+                       var element = document.querySelector(selector);
+                        callback(element);
+                        return;
+                    }
+                    else {
+                        setTimeout(function() {
+                            waitForElementToDisplay(selector, time,callback);
+                        }, time);
+                    }
+                }
+
+                function generateDialogInnerHtml(users){
+                    if(!users || users.length==0) return '';
+
+                    var innerHtml='<div  style="height: 300px; overflow: scroll">';
+                     innerHtml+='<form>';
+
+                    for (var k in users){
+                        var user=users[k];
+                        innerHtml+='<input type="radio" name="gender">'+user.name+'<br>';
+
+//                        var user=users[k];
+//                        var input=document.createElement('input');
+//                        input.type="radio";
+//                        input.value=user.name;
+//                        form.appendChild(input);
+                    }
+                    innerHtml+='</form>';
+                    innerHtml+='</div>';
+                    return innerHtml;
+                }
+
+
+            });
+</script>
+</html>
